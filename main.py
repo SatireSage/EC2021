@@ -9,6 +9,7 @@ def fraction(substr):
     for i in range(len(substr)):
         if substr[i] + substr[i + 1] + substr[i + 2] + substr[i + 3] == "frac":
             index = i + 4
+            break
     if index == -1:
         return substr
 
