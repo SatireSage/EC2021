@@ -3,11 +3,12 @@ import pyttsx3
 from latext import latex_to_text as lat
 from tkinter import *
 import threading
-# Explicit imports to satisfy Flake8
+import time
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, filedialog
 
 stop = False
 Value = ""
+engine = pyttsx3.init()
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
@@ -137,7 +138,6 @@ def mathParse(strLine):
 
 
 def speech():
-    engine = pyttsx3.init()
     f = open(entry_1.get(), 'r')
     lines = f.readlines()
     println = False
@@ -151,11 +151,10 @@ def speech():
             strippedLine = mathParse(line)
             print(strippedLine)
             engine.say(strippedLine)
-            engine.runAndWait()
             num += 1
         line = f.readline()
-        if stop:
-            break
+    engine.runAndWait()
+
 
 def select_path(event):
     global output_path
@@ -176,8 +175,8 @@ def player():
 
 
 def stoper():
-    stop = True
-
+    engine.stop()
+    time.sleep(100)
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -237,8 +236,7 @@ button_1 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    #command=lambda: threading.Thread(target=player, daemon=True).start(),
-    command=lambda: player(),
+    command=lambda: threading.Thread(target=player).start(),
     relief="flat"
 )
 button_1.place(
@@ -254,7 +252,7 @@ button_2 = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: stoper(),
+    command=lambda: threading.Thread(target=stoper).start(),
     relief="flat"
 )
 button_2.place(
