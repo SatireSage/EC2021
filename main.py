@@ -52,7 +52,39 @@ def integral(substr):
         limitIndex += 1
         old += substr[limitIndex]
 
-    return substr.replace(old, 'integral from' + lim_a + ' to ' + lim_b + " of ")
+    return substr.replace(old, 'integral from ' + lim_a + ' to ' + lim_b + " of ")
+
+
+def summation(substr):
+    # if there is an underscore there are limits
+    boundIndex = substr.find('_')
+    if boundIndex == -1:
+        return substr.replace('\sum', 'summation of ')
+
+    boundIndex += 1
+
+    bound_a = ""
+    bound_b = ""
+    term_a_done = False
+    endFound = False
+    old = "\sum_"
+    old += substr[boundIndex]
+
+    while not endFound or not term_a_done:
+        if substr[boundIndex] == "^":
+            term_a_done = True
+        elif term_a_done != True and (substr[boundIndex] != "{") and (substr[boundIndex] != "}"):
+            bound_a += substr[boundIndex]
+        elif substr[boundIndex] != "{" and substr[boundIndex] != "}":
+            bound_b += substr[boundIndex]
+
+        if term_a_done and substr[boundIndex + 1] == " ":
+            endFound = True
+
+        boundIndex += 1
+        old += substr[boundIndex]
+
+    return substr.replace(old, 'summation from ' + bound_a + ' to ' + bound_b + " of ")
 
 
 def dollarSign(mathStr):
@@ -63,8 +95,11 @@ def dollarSign(mathStr):
             result = fraction(result)
     elif ('frac' in mathStr):
         result = fraction(mathStr)
+    elif ('sum' in mathStr):
+        result = summation(mathStr)
     else:
         result = mathStr
+
     return result
 
 
