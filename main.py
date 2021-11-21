@@ -34,11 +34,14 @@ def integral(substr):
 
 
 def dollarSign(mathStr):
-    mathStr = mathStr.strip(('\displaystyle'))
+    mathStr = mathStr.replace("\displaystyle","")
     # {A(x) = \int_{-1}^x (3 + t^2)\,dt}
-    if ('int' in mathStr):
+    if ('int_' in mathStr):
         result = integral(mathStr)
-    pass
+        return result
+    else:
+        return mathStr
+    return ""
 
 
 def mathParse(strLine):
@@ -49,8 +52,8 @@ def mathParse(strLine):
         # split string by $ to interpret math
         if '$' in strLine:
             splitStrings = strLine.split('$')
-            for i in range(int(len(splitStrings)-1 / 2)):
-                splitStrings[i + 1] = dollarSign(splitStrings[i + 1])
+            for i in range(int(len(splitStrings) / 2)):
+                splitStrings[2*i + 1] = dollarSign(splitStrings[2*i + 1])
 
             # rejoin string sections
             strLine = " ".join(splitStrings)
@@ -77,6 +80,7 @@ if __name__ == '__main__':
             println = False
         if println:
             strippedLine = mathParse(line)
+
             print(str(num) + " " + strippedLine)
             engine.say(strippedLine)
             engine.runAndWait()
