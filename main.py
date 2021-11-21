@@ -5,7 +5,28 @@ from latext import latex_to_text as lat
 
 
 def fraction(substr):
-    pass
+    index = -1
+    for i in range(len(substr)):
+        if substr[i] + substr[i + 1] + substr[i + 2] + substr[i + 3] == "frac":
+            index = i + 4
+    if index == -1:
+        return substr
+
+    num_braces = 0
+    numerator = ""
+    denominator = ""
+    old = "frac"
+    while num_braces < 2:
+        if substr[index] == "}":
+            num_braces += 1
+        if num_braces == 0 and substr[index] != "{":
+            numerator += substr[index]
+        elif num_braces == 1 and substr != "{":
+            denominator += substr[index]
+        old += substr[index]
+        index += 1
+
+    return substr.replace(old, numerator + " over " + denominator)
 
 
 def integral(substr):
